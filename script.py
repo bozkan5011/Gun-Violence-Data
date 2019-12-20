@@ -1,5 +1,5 @@
-import csv
 import ast
+import csv
 
 def strToDict(data):
   if (len(data) == 0):
@@ -8,7 +8,7 @@ def strToDict(data):
   output = "{" + output + "'}"
   return ast.literal_eval(output)
 
-incidents = open("data/incidents.csv","w+")
+incidents = open("data/incidents.csv","w+",encoding="UTF-8")
 city_or_county = open("data/city_or_county.csv","w+")
 state_senate = open("data/state_senate.csv","w+")
 state = open("data/state.csv","w+")
@@ -35,11 +35,11 @@ rownum = 1
 numberofLine = 268725
 currPerc = 1
 print("Reading file...")
-with open('data.1.csv') as csvfile:
+with open('./data.1.csv',encoding="UTF-8") as csvfile:
     readCSV = csv.reader(csvfile, delimiter=',')
     for row in readCSV:
 
-      ###### All about location datas
+      ###### All about location datas 
       #state list
       if(row[2] not in state_list):
         state_list.append(row[2])
@@ -56,7 +56,8 @@ with open('data.1.csv') as csvfile:
       if( [row[3], state_list.index(row[2]) + 1  ] not in city_list ):
         city_list.append([row[3], state_list.index(row[2]) + 1  ])
 
-      incidentWrite = str(row[0])+","+str(row[1])+","+str(row[5])+","+str(row[6])+","+str(city_list.index([row[3], state_list.index(row[2])+1]) + 1)+","+str(row[4])+","+str(row[8])+","+str(row[14])+","+str(row[15])+","+str(row[16])+","+str(row[18])+","+str(row[26])+"\n"
+      incidentWrite = str(row[0]).strip()+"<"+str(row[1]).strip()+"<"+str(row[5]).strip()+"<"+str(row[6]).strip()+"<"+str(city_list.index([row[3], state_list.index(row[2])+1]) + 1).strip()+"<"+str(row[4]).strip()+"<"+str(row[8]).strip()+"<"+( str(row[14]).strip() if  (str(row[14])) !=  '' else  "0") +"<"+str(row[15]).strip()+"<"+(str(row[16]).strip() if (str(row[16])) != '' else "0")+"<"+str(row[18]).strip()+"<"+str(row[26]).strip()+"\n"
+
       incidents.write(incidentWrite)
 
 
@@ -72,7 +73,7 @@ with open('data.1.csv') as csvfile:
           incident_gun_single = []
           incident_gun_single.append(row[0])
           if(strToDict(row[11])[i] == "Unknown"):
-            incident_gun_single.append("")
+            incident_gun_single.append("NULL")
           elif(strToDict(row[11])[i] == "Stolen"):
             incident_gun_single.append("1")
           elif(strToDict(row[11])[i] == "Not-Stolen" or strToDict(row[11])[i] == "Not-stolen"):
@@ -104,13 +105,13 @@ with open('data.1.csv') as csvfile:
             participant_single.append("0")
             participant_single.append("11")
         else:
-          participant_single.append("")
-          participant_single.append("")
+          participant_single.append("NULL")
+          participant_single.append("NULL")
 
         if(i in tmp_name):
           participant_single.append(tmp_name[i])
         else:
-          participant_single.append("")
+          participant_single.append("NULL")
 
         if(i in tmp_gender):
           if( tmp_gender[i] == "Male"):
@@ -118,23 +119,23 @@ with open('data.1.csv') as csvfile:
           elif( tmp_gender[i] == "Female"):
             participant_single.append("0")
         else:
-            participant_single.append("")
+            participant_single.append("NULL")
 
 
         if(i in tmp_status):
           participant_single.append(tmp_status[i])
         else:
-          participant_single.append("")
+          participant_single.append("NULL")
 
         if(i in tmp_type):
           participant_single.append(tmp_type[i])
         else:
-          participant_single.append("")
+          participant_single.append("NULL")
 
         if(i in tmp_relationship):
           participant_single.append(tmp_relationship[i])
         else:
-          participant_single.append("")
+          participant_single.append("NULL")
 
         participant_list.append(participant_single)
       if(currPerc < rownum*100//numberofLine):
@@ -186,14 +187,14 @@ for i in inc_characteristics:
 print("Creating gun list")
 
 for i in incident_gun_list:
-  toWrite = str(i[0])+","+str(i[1])+","+str(i[2])+","+str(incident_gun_list.index(i)+1)+"\n"
+  toWrite = str(i[0])+","+str(i[1]) if (str(row[11])) != '' else "NULL"+","+str(i[2])+","+str(incident_gun_list.index(i)+1)+"\n"
   incident_gun.write(toWrite)
 
 print("Creating participantlist")
 
 for i in participant_list:
   toWrite = str(i[0])+","+str(participant_list.index(i)+1)+","+str(i[1])+","+str(i[2])+","+str(i[3])+","+str(i[4])+","+str(i[5])+","+str(i[6])+","+str(i[7])+"\n"
-  incident_participant.write(toWrite)
+  incident_participant.write(toWrite.encode("utf-8").decode("utf-8"))
 
 print("Completed")
 
